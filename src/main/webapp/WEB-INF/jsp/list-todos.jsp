@@ -24,6 +24,7 @@
                     <th>desc</th>
                     <th>targetDate</th>
                     <th>isDone</th>
+                    <th>country</th>
                     <th>edit</th>
                     <th>delete</th>
                 </tr>
@@ -36,6 +37,7 @@
                         <td>${todo.desc}</td>
                         <td>${todo.targetDate}</td>
                         <td>${todo.done}</td>
+                        <td>${todo.country.name}</td>
                         <td><a href="<spring:url value="/update-todo/${todo.id}" />" class="btn btn-info btn-xs"><i class="glyphicon glyphicon-check"></i> <spring:message code="todo.edit" /></a></td>
                         <td><a href="<spring:url value="/delete-todo/${todo.id}" />" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i><spring:message code="todo.delete" /></a></td>
                     </tr>

@@ -1,6 +1,7 @@
 package com.emi.springboot.springbootdemo.controller;
 
 import com.emi.springboot.springbootdemo.model.Todo;
+import com.emi.springboot.springbootdemo.service.CountryService;
 import com.emi.springboot.springbootdemo.service.TodoService;
 import com.emi.springboot.springbootdemo.validator.TodoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +24,31 @@ import java.util.Date;
 public class TodoController {
 
     private static final String REDIRECT_LIST_TODOS = "redirect:/list-todos";
-    private TodoService service;
+    private TodoService todoService;
     private TodoValidator todoValidator;
+    private CountryService countryService;
 
     @Autowired
-    public TodoController(TodoService service, TodoValidator todoValidator) {
+    public TodoController(TodoService todoService, CountryService countryService, TodoValidator todoValidator) {
         this.todoValidator = todoValidator;
-        this.service = service;
+        this.countryService = countryService;
+        this.todoService = todoService;
     }
 
     @RequestMapping(value="/list-todos", method = RequestMethod.GET)
     public ModelAndView showTodos(ModelMap model){
         String name = (String) model.get("name");
-        model.put("todos", service.retrieveTodos(name));
+        model.put("todos", todoService.retrieveTodos(name));
         return new ModelAndView("list-todos", model);
     }
 
     @RequestMapping(value="/create-todo", method = RequestMethod.GET)
     public ModelAndView createTodo(){
-        return new ModelAndView("create-todo", "todo", new Todo());
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("todo", new Todo());
+        modelAndView.addObject("listCountries", countryService.getCountries());
+        modelAndView.setViewName("create-todo");
+        return modelAndView;
     }
 
     /*It saves object into database. The @ModelAttribute puts request data
@@ -53,11 +60,12 @@ public class TodoController {
         modelAndView.addObject("todo", todo);
         if (errors.hasErrors()) {
             modelAndView.setViewName("create-todo");
+            modelAndView.addObject("listCountries", countryService.getCountries());
             modelAndView.addObject("errors", errors);
         } else {
             String name = (String) model.get("name");
             todo.setUser(name);
-            service.saveTodo(todo);
+            todoService.saveTodo(todo);
             modelAndView.setViewName(REDIRECT_LIST_TODOS);
         }
         return modelAndView;
@@ -67,8 +75,12 @@ public class TodoController {
      * The @PathVariable puts URL data into variable.*/
     @RequestMapping(value="/update-todo/{id}")
     public ModelAndView edit(@PathVariable long id){
-        Todo todo = service.getTodoById(id);
-        return new ModelAndView("edit-todo","todo",todo);
+        ModelAndView modelAndView = new ModelAndView();
+        Todo todo = todoService.getTodoById(id);
+        modelAndView.addObject("todo", todo);
+        modelAndView.addObject("listCountries", countryService.getCountries());
+        modelAndView.setViewName("edit-todo");
+        return modelAndView;
     }
 
     /* It updates model object. */
@@ -78,9 +90,10 @@ public class TodoController {
         modelAndView.addObject("todo", todo);
         if (errors.hasErrors()) {
             modelAndView.setViewName("edit-todo");
+            modelAndView.addObject("listCountries", countryService.getCountries());
             modelAndView.addObject("errors", errors);
         } else {
-            service.saveTodo(todo);
+            todoService.saveTodo(todo);
             modelAndView.setViewName(REDIRECT_LIST_TODOS);
         }
         return modelAndView;
@@ -88,7 +101,7 @@ public class TodoController {
 
     @RequestMapping(value="/delete-todo/{id}",method = RequestMethod.GET)
     public ModelAndView delete(@PathVariable int id){
-        service.deleteTodo(id);
+        todoService.deleteTodo(id);
         return new ModelAndView(REDIRECT_LIST_TODOS);
     }
 

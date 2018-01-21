@@ -27,5 +27,9 @@ public class TodoValidator implements Validator {
         if (todo.getTargetDate() != null && ! todo.getTargetDate().after(new Date())){
             errors.rejectValue("targetDate", "todo.targetDate.invalid");
         }
+
+        if (todo.getCountry() == null){
+            errors.rejectValue("country", "todo.select.country");
+        }
     }
 }

@@ -2,10 +2,7 @@ package com.emi.springboot.springbootdemo.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -25,14 +22,19 @@ public class Todo {
     private Date targetDate;
     private boolean done;
 
+    @ManyToOne
+    @JoinColumn(name = "country_id", foreignKey = @ForeignKey(name="countryid_todo_fkey"))
+    private Country country;
+
     public Todo() {
     }
 
-    public Todo(String user, String desc, Date targetDate, boolean done) {
+    public Todo(String user, String desc, Date targetDate, boolean done, Country country) {
         this.user = user;
         this.desc = desc;
         this.targetDate = targetDate;
         this.done = done;
+        this.country = country;
     }
 
     public long getId() {
@@ -73,6 +75,14 @@ public class Todo {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
     @Override

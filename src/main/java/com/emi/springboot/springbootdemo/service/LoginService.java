@@ -14,8 +14,12 @@ import java.util.Optional;
 @Service
 public class LoginService {
 
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public LoginService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @PostConstruct
     public void initialized(){
@@ -26,7 +30,6 @@ public class LoginService {
         user.setPassword("test");
         userRepository.save(user);
     }
-
 
     public boolean validateUser(String username, String password) {
         Optional<User> user =  Optional.ofNullable(userRepository.findByUsernameAndPassword(username,password));

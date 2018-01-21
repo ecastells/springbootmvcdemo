@@ -1,5 +1,6 @@
 package com.emi.springboot.springbootdemo.service;
 
+import com.emi.springboot.springbootdemo.model.Country;
 import com.emi.springboot.springbootdemo.model.Todo;
 import com.emi.springboot.springbootdemo.model.User;
 import com.emi.springboot.springbootdemo.repository.TodoRepository;
@@ -29,13 +30,12 @@ public class TodoServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        todoService = new TodoService();
-        todoService.setTodoRepository(todoRepository);
+        todoService = new TodoService(todoRepository);
     }
 
     @Test
     public void shouldGetTodoWhenInvokeRetrieveTodosWithTestUser(){
-        Todo todo = new Todo("test", "Learn Spring MVC", new Date(),false);
+        Todo todo = new Todo("test", "Learn Spring MVC", new Date(),false, new Country("AR", "Argentina"));
         List<Todo> list = Arrays.asList(todo);
         Mockito.when(todoRepository.findByUser("test")).thenReturn(list);
 

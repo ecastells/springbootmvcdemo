@@ -15,6 +15,13 @@
         .error {
             color: red;
         }
+        .errorblock {
+            color: #000;
+            background-color: #ffEEEE;
+            border: 3px solid #ff0000;
+            padding: 8px;
+            margin: 16px;
+        }
     </style>
 </head>
 
@@ -24,7 +31,7 @@
     <div class="row-fluid">
         <div class="col-md-6">
             <form:form method="POST" action="/save-todo" modelAttribute="todo">
-
+                <form:errors path="*" cssClass="errorblock" element="div" />
                 <div class="form-group">
                     <form:label path="desc"><spring:message code="todo.desc" /></form:label>
                     <form:textarea path="desc" cols="60" class="form-control"/>
@@ -38,7 +45,14 @@
                 <div class="form-group">
                     <form:label path="done"><spring:message code="todo.done" /></form:label>
                     <form:checkbox path="done" class="checkbox" />
-                    <form:errors path="done" />
+                </div>
+                <div class="form-group">
+                    <form:label path="country"><spring:message code="todo.country" /></form:label>
+                    <form:select path="country" multiple="false">
+                        <form:option value="" label="--- Select ---" />
+                        <form:options items="${listCountries}" itemLabel="acronym"/>
+                    </form:select>
+                    <form:errors path="country" cssClass="error" />
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Save" class="btn btn-success"/>
