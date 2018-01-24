@@ -24,6 +24,7 @@ import java.util.Date;
 public class TodoController {
 
     private static final String REDIRECT_LIST_TODOS = "redirect:/list-todos";
+    public static final String LIST_COUNTRIES_VIEW = "listCountries";
     private TodoService todoService;
     private TodoValidator todoValidator;
     private CountryService countryService;
@@ -46,7 +47,7 @@ public class TodoController {
     public ModelAndView createTodo(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("todo", new Todo());
-        modelAndView.addObject("listCountries", countryService.getCountries());
+        modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries());
         modelAndView.setViewName("create-todo");
         return modelAndView;
     }
@@ -60,7 +61,7 @@ public class TodoController {
         modelAndView.addObject("todo", todo);
         if (errors.hasErrors()) {
             modelAndView.setViewName("create-todo");
-            modelAndView.addObject("listCountries", countryService.getCountries());
+            modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries());
             modelAndView.addObject("errors", errors);
         } else {
             String name = (String) model.get("name");
@@ -78,7 +79,7 @@ public class TodoController {
         ModelAndView modelAndView = new ModelAndView();
         Todo todo = todoService.getTodoById(id);
         modelAndView.addObject("todo", todo);
-        modelAndView.addObject("listCountries", countryService.getCountries());
+        modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries());
         modelAndView.setViewName("edit-todo");
         return modelAndView;
     }
@@ -90,7 +91,7 @@ public class TodoController {
         modelAndView.addObject("todo", todo);
         if (errors.hasErrors()) {
             modelAndView.setViewName("edit-todo");
-            modelAndView.addObject("listCountries", countryService.getCountries());
+            modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries());
             modelAndView.addObject("errors", errors);
         } else {
             todoService.saveTodo(todo);

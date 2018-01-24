@@ -1,14 +1,11 @@
 package com.emi.springboot.springbootdemo.service;
 
-import java.util.Date;
 import java.util.List;
 
-import com.emi.springboot.springbootdemo.model.Country;
 import com.emi.springboot.springbootdemo.model.Todo;
 import com.emi.springboot.springbootdemo.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 /**

@@ -6,6 +6,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.NotBlank;
+
 /**
  * Created by Emi on 21/01/2018.
  */
@@ -13,10 +16,15 @@ import javax.validation.constraints.NotNull;
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @NotNull
+    @ApiModelProperty(example ="1",position = 0,notes = "Required to PUT but not in a POST")
+    private Long id;
+
+    @NotNull @NotBlank
+    @ApiModelProperty(required = true, example = "AR", position = 1)
     private String acronym;
-    @NotNull
+
+    @NotNull @NotBlank
+    @ApiModelProperty(required = true, example = "Argentina", position = 2)
     private String name;
 
     public Country() {
@@ -27,11 +35,11 @@ public class Country {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
