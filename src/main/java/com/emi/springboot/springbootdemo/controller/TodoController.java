@@ -6,6 +6,8 @@ import com.emi.springboot.springbootdemo.service.TodoService;
 import com.emi.springboot.springbootdemo.validator.TodoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -28,6 +30,7 @@ public class TodoController {
     private TodoService todoService;
     private TodoValidator todoValidator;
     private CountryService countryService;
+    private Pageable pageable = new PageRequest(0, 1000);
 
     @Autowired
     public TodoController(TodoService todoService, CountryService countryService, TodoValidator todoValidator) {
@@ -47,7 +50,7 @@ public class TodoController {
     public ModelAndView createTodo(){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("todo", new Todo());
-        modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries());
+        modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries(pageable));
         modelAndView.setViewName("create-todo");
         return modelAndView;
     }
@@ -61,7 +64,7 @@ public class TodoController {
         modelAndView.addObject("todo", todo);
         if (errors.hasErrors()) {
             modelAndView.setViewName("create-todo");
-            modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries());
+            modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries(pageable));
             modelAndView.addObject("errors", errors);
         } else {
             String name = (String) model.get("name");
@@ -79,7 +82,7 @@ public class TodoController {
         ModelAndView modelAndView = new ModelAndView();
         Todo todo = todoService.getTodoById(id);
         modelAndView.addObject("todo", todo);
-        modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries());
+        modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries(pageable));
         modelAndView.setViewName("edit-todo");
         return modelAndView;
     }
@@ -91,7 +94,7 @@ public class TodoController {
         modelAndView.addObject("todo", todo);
         if (errors.hasErrors()) {
             modelAndView.setViewName("edit-todo");
-            modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries());
+            modelAndView.addObject(LIST_COUNTRIES_VIEW, countryService.getCountries(pageable));
             modelAndView.addObject("errors", errors);
         } else {
             todoService.saveTodo(todo);

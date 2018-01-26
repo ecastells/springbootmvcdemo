@@ -4,13 +4,16 @@ import com.emi.springboot.springbootdemo.model.Country;
 import com.emi.springboot.springbootdemo.service.CountryService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.List;
-
+import java.net.URI;
 
 /**
  * Created by Emi on 22/01/2018.
@@ -27,6 +30,9 @@ public class CountryController {
     private static final String RESPONSE_STATUS_403 = "Accessing the resource you were trying to reach is forbidden";
     private static final String RESPONSE_STATUS_404 = "The resource you were trying to reach is not found";
     private static final String RESPONSE_STATUS_500 = "Ooops, something went wrong";
+    private static final Integer DEFAULT_INDEX = 0;
+    private static final Integer DEFAULT_SIZE = 1000;
+
     private CountryService countryService;
 
     @Autowired
@@ -44,8 +50,12 @@ public class CountryController {
             @ApiResponse(code = 500, message = RESPONSE_STATUS_500)
     })
     @RequestMapping(value ="/countries", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity getCountries(){
-        List<Country> countries = countryService.getCountries();
+    public ResponseEntity getCountries(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size){
+        int pageValue = (page == null || page < 0) ? DEFAULT_INDEX : page;
+        int sizeValue = (size == null || size < 0) ? DEFAULT_SIZE : size;
+
+        Pageable pageable = new PageRequest(pageValue, sizeValue);
+        Page<Country> countries = countryService.getCountries(pageable);
         return ResponseEntity.ok(countries);
     }
 
@@ -81,7 +91,12 @@ public class CountryController {
     @RequestMapping(value = "/country",method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity addCountry(@ApiParam(value = "Country to add",required = true) @Valid @RequestBody Country country){
         Country countryCreated = countryService.saveCountry(country);
-        return new ResponseEntity(countryCreated, HttpStatus.CREATED);
+        if (countryCreated == null){
+            return ResponseEntity.noContent().build();
+        }
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(
+                "/{id}").buildAndExpand(countryCreated.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
 

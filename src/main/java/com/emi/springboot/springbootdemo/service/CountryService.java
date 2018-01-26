@@ -5,12 +5,13 @@ import com.emi.springboot.springbootdemo.model.Todo;
 import com.emi.springboot.springbootdemo.repository.CountryRepository;
 import com.emi.springboot.springbootdemo.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Emi on 21/01/2018.
@@ -43,8 +44,8 @@ public class CountryService {
         todoRepository.save(new Todo("emi", "Learn Spring Data", new Date(),false, countryRepository.findByAcronym("US")));
     }
 
-    public List<Country> getCountries(){
-        return countryRepository.findAllByOrderByAcronymAsc();
+    public Page<Country> getCountries(Pageable pageable){
+        return countryRepository.findAllByOrderByAcronymAsc(pageable);
     }
 
     @Transactional
