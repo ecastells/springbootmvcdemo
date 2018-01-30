@@ -115,24 +115,32 @@ public class CountryControllerTest {
     }
 
     @Test
-    public void updateCountry() throws Exception {
+    public void addInvalidCountry() throws Exception {
 
-        Mockito.doNothing().when(countryServiceMock).deleteCountry(Mockito.eq(1L));
+        Mockito.when(countryServiceMock.saveCountry(Mockito.eq(country))).thenThrow(new NullPointerException("Null"));
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete(
-                "/api/country/1").accept(MediaType.APPLICATION_JSON);
+        String expectedResult = "{\"message\":\"Null\",\"code\":\"3\"}";
+
+        String countryJson = "{\"id\":1,\"acronym\":\"AR\",\"name\":\"Argentina\"}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/country")
+                .accept(MediaType.APPLICATION_JSON).content(countryJson)
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 
         MockHttpServletResponse response = result.getResponse();
 
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
 
-        Mockito.verify(countryServiceMock, Mockito.times(1)).deleteCountry(Mockito.eq(1L));
+        JSONAssert.assertEquals(expectedResult, result.getResponse().getContentAsString(), false);
+
+        Mockito.verify(countryServiceMock, Mockito.times(1)).saveCountry(Mockito.eq(country));
     }
 
     @Test
-    public void deleteCountry() throws Exception {
+    public void updateCountry() throws Exception {
 
         Mockito.when(countryServiceMock.saveCountry(Mockito.eq(country))).thenReturn(country);
 
@@ -148,5 +156,24 @@ public class CountryControllerTest {
         JSONAssert.assertEquals(countryJson, result.getResponse().getContentAsString(), true);
 
         Mockito.verify(countryServiceMock, Mockito.times(1)).saveCountry(Mockito.eq(country));
+    }
+
+    @Test
+    public void deleteCountry() throws Exception {
+
+        Mockito.when(countryServiceMock.getCountryById(Mockito.eq(1l))).thenReturn(country);
+        Mockito.doNothing().when(countryServiceMock).deleteCountry(Mockito.eq(1L));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete(
+                "/api/country/1").accept(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        Mockito.verify(countryServiceMock, Mockito.times(1)).getCountryById(Mockito.eq(1L));
+        Mockito.verify(countryServiceMock, Mockito.times(1)).deleteCountry(Mockito.eq(1L));
     }
 }

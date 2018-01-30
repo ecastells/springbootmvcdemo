@@ -1,5 +1,6 @@
 package com.emi.springboot.springbootdemo.model;
 
+import com.emi.springboot.springbootdemo.auditory.AuditListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.Date;
  * Created by Emi on 11/12/2017.
  */
 @Entity
+@EntityListeners(AuditListener.class)
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -74,7 +73,7 @@ public class CountryController {
     {
         Country country = countryService.getCountryById(id);
         if(country == null){
-            throw new NullPointerException();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(country);
     }
@@ -118,6 +117,9 @@ public class CountryController {
         } else {
             countryUpdated = countryService.saveCountry(country);
         }
+        if(countryUpdated == null){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(countryUpdated);
     }
 
@@ -132,7 +134,10 @@ public class CountryController {
     })
     @RequestMapping(value = "/country/{id}",method = RequestMethod.DELETE)
     public ResponseEntity deleteCountry(@ApiParam(value = "Country ID to be deleted", required = true) @PathVariable Long id){
+        if(countryService.getCountryById(id) == null){
+           return ResponseEntity.notFound().build();
+        }
         countryService.deleteCountry(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 }

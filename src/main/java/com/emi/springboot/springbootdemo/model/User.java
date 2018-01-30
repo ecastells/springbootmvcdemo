@@ -1,6 +1,9 @@
 package com.emi.springboot.springbootdemo.model;
 
+import com.emi.springboot.springbootdemo.auditory.AuditListener;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -9,6 +12,7 @@ import javax.validation.constraints.Size;
  * Created by Emi on 11/12/2017.
  */
 @Entity
+@EntityListeners(AuditListener.class)
 public class User {
     @Id
     @Size(max = 64)
@@ -76,5 +80,17 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
     }
 }
