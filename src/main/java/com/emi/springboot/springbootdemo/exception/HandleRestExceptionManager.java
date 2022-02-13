@@ -21,7 +21,7 @@ public class HandleRestExceptionManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(HandleRestExceptionManager.class);
     private static final String MESSAGE = "message";
     private static final String CODE = "code";
-    private Map<String,Object> map = new LinkedHashMap<>();
+    private final Map<String,Object> map = new LinkedHashMap<>();
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity handleEmptyResultDataAccessException(EmptyResultDataAccessException ex){
